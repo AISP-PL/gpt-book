@@ -42,6 +42,7 @@ def gradio_setup(ai_models: list, text_process: callable) -> gr.Interface:
         outputs=output,
         title="GPT Book",
         description="Testing capabilities of GPT3-4 models for text generation.",
+        allow_flagging=False,
     )
 
     return interface
