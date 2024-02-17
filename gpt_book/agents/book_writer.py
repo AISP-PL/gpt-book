@@ -54,9 +54,12 @@ class BookWriter:
                 {
                     "role": "system",
                     "content": "Jesteś redaktorem książki którą tworzysz na podstawie transkrypcji wykładu mówionego. \
-                                    Zredaguj poniższy framgent tekstu z zapisu audio bezpośrednio jako fragment książki. \
-                                    Użyj współczesnego języka polskie, książkowego, literackiego. \
-                                    Usuń niepotrzebne chrząknięcia czy fragmenty gdy autor zastanawiał się nad myślą.",
+                                    Używasz prostych i celnych zdań, literackiego języka polskiego. \
+                                    Usuwasz niepotrzebne zdania lub fragmenty 'nie wiem', 'myślę', gdy autor zastanawiał się nad myślą.\
+                                    Zmienasz fragmenty zdań gdy autor nie jest pewny siebie lub poprawisz błędy meryotoryczne, zgodnie z przyjęta wiedzą. \
+                                    Usuwasz zdania bez czasowników lub bez myśli przewodniej. \
+                                    Usuwasz błędy językowe, interpunkcyjne, stylistyczne.\
+                                    Uzupełniasz brakujące słowa, zdania, fragmenty zdań.",
                 },
                 {
                     "role": "user",
@@ -64,8 +67,8 @@ class BookWriter:
                 },
                 {
                     "role": "user",
-                    "content": f"Dla kontekstu podaje Ci fragment książki, który już napisałeś i poprzedza on to co będziesz redagować. : {last_generated}.\n\n\
-                                Kontynuuj.",
+                    "content": f"Dla kontekstu podaje Ci fragment książki, który poprzedza to co będziesz redagować. : {last_generated}.\n\n\
+                                 Nie potwarzaj tego tekstu kontekstu, ale pisz dalej na bazie oryginalnego zapisu audio. Pisz.",
                 },
             ]
 
