@@ -9,11 +9,13 @@
 from dataclasses import dataclass
 
 import openai
+import tqdm
 from openai import OpenAI
 
 from gpt_book.helpers.chat_gpt import GptPrompt
 from gpt_book.helpers.parsers import autosplit_paragraphs
 from gpt_book.models.billings import Billings
+from gpt_book.models.text_comparison import TextComparison
 
 
 @dataclass
@@ -28,7 +30,7 @@ class BookWriter:
         model_tokens: int,
         billings: Billings,
         paragraph_max_words: int = 200,
-    ) -> list[tuple[str, str]]:
+    ) -> list[TextComparison]:
         """
         Process input text with OpenAI model and return list
         of paragraphs pairs (original, generated).
@@ -45,7 +47,7 @@ class BookWriter:
         # Last generated paragraph
         last_generated = ""
         # Process : Loop
-        for paragraph in input_paragraphs:
+        for paragraph in tqdm(input_paragraphs, desc="Processing book paragraphs"):
             # OpenAI : Messages
             messages = [
                 {
@@ -63,13 +65,17 @@ class BookWriter:
             ]
 
             # Process : Generate
-            generated = GptPrompt(client, messages, model=model)
+            generated_paragraph = GptPrompt(client, messages, model=model)
 
             # Add cost to billings
             billings.add_api_call(model)
 
-            # Add to output
-            output_paragraphs.append((paragraph, generated))
-            last_generated = generated
+            # Output : Append
+            output_paragraphs.append(
+                TextComparison(input_text=paragraph, output_text=generated_paragraph)
+            )
+
+            # Last generated : Save
+            last_generated = generated_paragraph
 
         return output_paragraphs

@@ -13,6 +13,7 @@ from openai import OpenAI
 
 from gpt_book.agents.book_writer import BookWriter
 from gpt_book.models.billings import Billings
+from gpt_book.models.text_comparison import TextComparison
 
 # Load .env file
 load_dotenv()
@@ -97,6 +98,37 @@ def view_html(input_text: str, output_text: str) -> str:
     return html
 
 
+def view_paragraphs_html(book_paragraphs: list[TextComparison]) -> str:
+    """Reads views/view.html file and replaces INPUT as input_text and OUTPUT as output_text"""
+    # View Template : Read
+    with open("views/view_book.html", "r") as file:
+        html = file.read()
+
+    # Book paragraphs : Create html
+    book_html = ""
+
+    # Book paragraphs : Create html
+    for paragraph in book_paragraphs:
+        # Comparision paragraphs : Create html
+        paragraph_html = f'\
+        <div class="container">\
+            <div class="text-block">\
+                <h2>Tekst oryginalny</h2>\
+                <p>{paragraph.input_text}</p>\
+            </div>\
+            <div class="text-block">\
+                <h2>Tekst zmieniony</h2>\
+                <p>{paragraph.output_text}</p>\
+            </div>\
+        </div><hr>'
+        # Book : Add paragraph
+        book_html += paragraph_html
+
+    # View : Create
+    html = html.replace("BOOK", book_html)
+    return html
+
+
 def text_process(input_file: str, model: str, billings: Billings) -> str:
     """
     Process input file and return output comparison.
@@ -107,10 +139,12 @@ def text_process(input_file: str, model: str, billings: Billings) -> str:
 
     # Book writer : Create instance
     book_writer = BookWriter()
-    output_text = book_writer.process(openai_client, input_text, model, 4096, billings)
+    book_paragraphs = book_writer.process(
+        openai_client, input_text, model, 4096, billings
+    )
 
     # Return output comparison
-    return view_html(input_text, output_text)
+    return view_paragraphs_html(book_paragraphs)
 
 
 if __name__ == "__main__":
