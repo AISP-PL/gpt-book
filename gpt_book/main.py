@@ -5,9 +5,25 @@
     Testing capabilities of GPT3-4 models for text generation.
 """
 
-import gradio as gr
+import os
 
+import gradio as gr
+from dotenv import load_dotenv
+from openai import OpenAI
+
+from gpt_book.agents.book_writer import BookWriter
 from gpt_book.models.billings import Billings
+
+# Load .env file
+load_dotenv()
+
+# API Key : Get from environment, otherwise raise error
+api_key = os.environ.get("OPENAI_API_KEY", None)
+if api_key is None:
+    raise ValueError("OPENAI_API_KEY is not set in environment variables.")
+
+# OpenAI : Create instance of client
+openai_client = OpenAI(api_key=api_key)
 
 
 def gradio_setup(
@@ -89,8 +105,9 @@ def text_process(input_file: str, model: str, billings: Billings) -> str:
     with open(input_file.name, "r") as file:
         input_text = file.read()
 
-    # Process input text using selected model
-    output_text = f"Output from {model} model"
+    # Book writer : Create instance
+    book_writer = BookWriter()
+    book_writer.process(openai_client, input_text, model, 4096, billings)
 
     # Return output comparison
     return view_html(input_text, output_text)

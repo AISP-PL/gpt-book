@@ -13,6 +13,12 @@
     "mypy-type-checker.importStrategy": "fromEnvironment",
     "mypy-type-checker.reportingScope": "workspace",
     "mypy-type-checker.cwd": "${workspaceFolder}",
+    "flake8.severity": {
+        "E": "Warning",
+        "F": "Error",
+        "I": "Information",
+        "W": "Warning"
+    },
     "cSpell.enabled": false,
     "python.testing.pytestArgs": [
         "tests"
