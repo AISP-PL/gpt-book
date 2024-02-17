@@ -6,6 +6,7 @@
 """
 
 import os
+from datetime import datetime
 
 import gradio as gr
 from dotenv import load_dotenv
@@ -98,7 +99,9 @@ def view_html(input_text: str, output_text: str) -> str:
     return html
 
 
-def view_paragraphs_html(book_paragraphs: list[TextComparison]) -> str:
+def view_paragraphs_html(
+    book_paragraphs: list[TextComparison], save_html: bool = False
+) -> str:
     """Reads views/view.html file and replaces INPUT as input_text and OUTPUT as output_text"""
     # View Template : Read
     with open("views/view_book.html", "r") as file:
@@ -129,6 +132,13 @@ def view_paragraphs_html(book_paragraphs: list[TextComparison]) -> str:
 
     # View : Create
     html = html.replace("BOOK", book_html)
+
+    # Save : If needed
+    if save_html:
+        session_datetime = datetime.now().strftime("%Y%m%d-%H%M")
+        with open(f"temp/book_session_{session_datetime}.html", "w") as file:
+            file.write(html)
+
     return html
 
 
@@ -147,7 +157,7 @@ def text_process(input_file: str, model: str, billings: Billings) -> str:
     )
 
     # Return output comparison
-    return view_paragraphs_html(book_paragraphs)
+    return view_paragraphs_html(book_paragraphs, save_html=True)
 
 
 if __name__ == "__main__":
