@@ -9,8 +9,8 @@
 from dataclasses import dataclass
 
 import openai
-import tqdm
 from openai import OpenAI
+from tqdm import tqdm
 
 from gpt_book.helpers.chat_gpt import GptPrompt
 from gpt_book.helpers.parsers import autosplit_paragraphs
