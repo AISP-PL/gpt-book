@@ -10,6 +10,7 @@ from copy import copy
 from dataclasses import dataclass
 
 import openai
+from gradio import Progress
 from openai import OpenAI
 from tqdm import tqdm
 
@@ -36,6 +37,8 @@ class BookWriter:
         Process input text with OpenAI model and return list
         of paragraphs pairs (original, generated).
         """
+        progress = Progress()
+
         # Split text into paragraphs
         input_paragraphs = autosplit_paragraphs(text, max_words=paragraph_max_words)
 
@@ -48,7 +51,9 @@ class BookWriter:
         # Last generated paragraph
         last_generated = ""
         # Process : Loop
-        for paragraph in tqdm(input_paragraphs, desc="Processing book paragraphs"):
+        for paragraph in progress.tqdm(
+            input_paragraphs, desc="Processing book paragraphs"
+        ):
             # OpenAI : Messages
             messages = [
                 {
