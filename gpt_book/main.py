@@ -156,6 +156,12 @@ def text_process(input_file: str, model: str, billings: Billings) -> str:
         openai_client, input_text, model, 4096, billings
     )
 
+    # @TODO : Add Book merger, other agent
+    # which merges final book text to single long filetext.
+
+    # @TODO : Add Book critic, other agent
+    # which checks if book text is good enough to be published.
+
     # Return output comparison
     return view_paragraphs_html(book_paragraphs, save_html=True)
 
