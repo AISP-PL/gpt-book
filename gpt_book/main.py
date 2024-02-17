@@ -42,7 +42,7 @@ def gradio_setup(
         # AI Models : Combo box
         # Gradio Combo box for OpenAI model selection
         ai_models_str = [
-            f"{model_name} / {token_size} tokens"
+            (f"{model_name} / {token_size} tokens", model_name)
             for model_name, token_size in ai_models
         ]
         input_model = gr.components.Dropdown(
