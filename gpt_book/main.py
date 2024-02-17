@@ -7,8 +7,12 @@
 
 import gradio as gr
 
+from gpt_book.models.billings import Billings
 
-def gradio_setup(ai_models: list, text_process: callable) -> gr.Interface:
+
+def gradio_setup(
+    ai_models: list, billings: Billings, text_process: callable
+) -> gr.Interface:
     """
     Setup gradio application with
     - Gradio file input field
@@ -26,6 +30,9 @@ def gradio_setup(ai_models: list, text_process: callable) -> gr.Interface:
             + "Testing capabilities of GPT models for book generation from free text without any constrains."
         )
 
+        # Billings : Markdown
+        gr.Markdown(f"Total cost of all API calls : {billings.total_cost} USD")
+
         # File Input : Input file
         # Gradio file input field
         input_file = gr.components.File(
@@ -35,7 +42,8 @@ def gradio_setup(ai_models: list, text_process: callable) -> gr.Interface:
         # AI Models : Combo box
         # Gradio Combo box for OpenAI model selection
         ai_models_str = [
-            f"{model_name} / {token_size}" for model_name, token_size in ai_models
+            f"{model_name} / {token_size} tokens"
+            for model_name, token_size in ai_models
         ]
         input_model = gr.components.Dropdown(
             label="Select OpenAI model ",
@@ -51,7 +59,9 @@ def gradio_setup(ai_models: list, text_process: callable) -> gr.Interface:
 
         # Callback : When submit button is clicked
         text_button.click(
-            text_process,
+            lambda input_file, input_model: text_process(
+                input_file, input_model, billings
+            ),
             inputs=[
                 input_file,
                 input_model,
@@ -71,7 +81,7 @@ def view_html(input_text: str, output_text: str) -> str:
     return html
 
 
-def text_process(input_file: str, model: str) -> str:
+def text_process(input_file: str, model: str, billings: Billings) -> str:
     """
     Process input file and return output comparison.
     """
@@ -87,5 +97,12 @@ def text_process(input_file: str, model: str) -> str:
 
 
 if __name__ == "__main__":
+    # Billings : Create instance
+    billings = Billings()
+    # List of all AI models
     ai_models = [("gpt-3.5-turbo-0125", 16385), ("gpt-4", 8192)]
-    gradio_setup(ai_models=ai_models, text_process=text_process).launch()
+
+    # Gradio setup
+    gradio_setup(
+        ai_models=ai_models, billings=billings, text_process=text_process
+    ).launch()
