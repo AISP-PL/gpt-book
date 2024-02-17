@@ -107,7 +107,7 @@ def text_process(input_file: str, model: str, billings: Billings) -> str:
 
     # Book writer : Create instance
     book_writer = BookWriter()
-    book_writer.process(openai_client, input_text, model, 4096, billings)
+    output_text = book_writer.process(openai_client, input_text, model, 4096, billings)
 
     # Return output comparison
     return view_html(input_text, output_text)

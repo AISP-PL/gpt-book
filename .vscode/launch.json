@@ -11,6 +11,14 @@
             "program": "${file}",
             "cwd": "${workspaceFolder}",
             "console": "integratedTerminal"
+        },
+        {
+            "name": "Gpt_Book",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${workspaceFolder}/gpt_book/main.py",
+            "cwd": "${workspaceFolder}",
+            "console": "integratedTerminal"
         }
     ]
 }

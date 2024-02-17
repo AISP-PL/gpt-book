@@ -11,6 +11,7 @@ from dataclasses import dataclass
 import openai
 from openai import OpenAI
 
+from gpt_book.helpers.chat_gpt import GptPrompt
 from gpt_book.helpers.parsers import autosplit_paragraphs
 from gpt_book.models.billings import Billings
 
@@ -45,21 +46,24 @@ class BookWriter:
         last_generated = ""
         # Process : Loop
         for paragraph in input_paragraphs:
+            # OpenAI : Messages
+            messages = [
+                {
+                    "role": "system",
+                    "content": "Jesteś redaktorem książki którą tworzysz na podstawie transkrypcji wykładu mówionego. \
+                                    Zredaguj poniższy framgent tekstu z zapisu audio bezpośrednio jako fragment książki. \
+                                    Użyj współczesnego języka polskie, książkowego, literackiego. \
+                                    Usuń niepotrzebne chrząknięcia czy fragmenty gdy autor zastanawiał się nad myślą.",
+                },
+                {
+                    "role": "user",
+                    "content": f"Oto fragment książki poprzedzający to co będziesz redagować : {last_generated} \n\n \
+                                            Oto oryginalny tekst zapisu audio:\n\n{paragraph}\n\n",
+                },
+            ]
+
             # Process : Generate
-            generated = (
-                client.completions.create(
-                    model=model,
-                    prompt=f"Jesteś redaktorem książki którą tworzysz na podstawie transkrypcji wykładu mówionego. \
-                             Zredaguj poniższy framgent tekstu z zapisu audio bezpośrednio jako fragment książki. \
-                             Użyj współczesnego języka polskie, książkowego, literackiego. \
-                             Usuń niepotrzebne chrząknięcia czy fragmenty gdy autor zastanawiał się nad myślą. \n\n \
-                             Oto fragment książki poprzedzający to co będziesz redagować : {last_generated} \n\n \
-                             Oto oryginalny tekst zapisu audio:\n\n{paragraph}\n\n\
-                             Oto twój tekst :\n\n",
-                )
-                .choices[0]
-                .text.strip()
-            )
+            generated = GptPrompt(client, messages, model=model)
 
             # Add cost to billings
             billings.add_api_call(model)
