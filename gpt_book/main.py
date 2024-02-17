@@ -18,32 +18,46 @@ def gradio_setup(ai_models: list, text_process: callable) -> gr.Interface:
 
     Using gradio blocks.
     """
+    with gr.Blocks() as interface:
+        # Title + Description
+        gr.Markdown(
+            "GPT Book - Create your own book from unstructured text!\n"
+            + "-------------------\n"
+            + "Testing capabilities of GPT models for book generation from free text without any constrains."
+        )
 
-    # Gradio file input field
-    input_file = gr.components.File(label="Input Text File")
+        # File Input : Input file
+        # Gradio file input field
+        input_file = gr.components.File(
+            label="Please upload a text file for AI model to process as book."
+        )
 
-    ai_models_str = [
-        f"{model_name} / {token_size}" for model_name, token_size in ai_models
-    ]
+        # AI Models : Combo box
+        # Gradio Combo box for OpenAI model selection
+        ai_models_str = [
+            f"{model_name} / {token_size}" for model_name, token_size in ai_models
+        ]
+        input_model = gr.components.Dropdown(
+            label="Select OpenAI model ",
+            choices=ai_models_str,
+            value=ai_models_str[0],
+        )
 
-    # Gradio Combo box for OpenAI model selection
-    model = gr.components.Dropdown(
-        label="Model",
-        choices=ai_models_str,
-    )
+        # Button : Submit
+        text_button = gr.Button("Submit")
 
-    # Gradio HTML output where two <div's> side by side input and
-    output = gr.components.HTML(label="Output")
+        # Gradio HTML output where two <div's> side by side input and
+        output_html = gr.components.HTML(label="Output")
 
-    # Gradio Interface
-    interface = gr.Interface(
-        fn=text_process,
-        inputs=[input_file, model],
-        outputs=output,
-        title="GPT Book",
-        description="Testing capabilities of GPT3-4 models for text generation.",
-        allow_flagging=False,
-    )
+        # Callback : When submit button is clicked
+        text_button.click(
+            text_process,
+            inputs=[
+                input_file,
+                input_model,
+            ],
+            outputs=[output_html],
+        )
 
     return interface
 
@@ -70,14 +84,6 @@ def text_process(input_file: str, model: str) -> str:
 
     # Return output comparison
     return view_html(input_text, output_text)
-
-
-def models_list():
-    """Use Langchain openai to list all available chat models"""
-    from langchain_openai import OpenAI
-
-    openai = OpenAI()
-    return openai.list_models()
 
 
 if __name__ == "__main__":
