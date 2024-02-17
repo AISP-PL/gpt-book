@@ -161,3 +161,4 @@ cython_debug/
 env3.11/
 data/*.txt
 data/billings.json
+temp/book_session*
