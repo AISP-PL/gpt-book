@@ -15,7 +15,7 @@ def GptPrompt(
     client: OpenAI,
     messages: list,
     model: str = "gpt-3.5-turbo",
-    temperature: float = 0.7,
+    temperature: float = 0.5,
 ) -> Optional[str]:
     """Simple wrapper prompt GPT with messages."""
 

@@ -107,17 +107,20 @@ def view_paragraphs_html(book_paragraphs: list[TextComparison]) -> str:
     # Book paragraphs : Create html
     book_html = ""
 
+    # Count of paragraphs
+    count = len(book_paragraphs)
+
     # Book paragraphs : Create html
-    for paragraph in book_paragraphs:
+    for index, paragraph in enumerate(book_paragraphs):
         # Comparision paragraphs : Create html
         paragraph_html = f'\
         <div class="container">\
             <div class="text-block">\
-                <h2>Tekst oryginalny</h2>\
+                <h2>Fragment oryginalny {index}/{count}</h2>\
                 <p>{paragraph.input_text}</p>\
             </div>\
             <div class="text-block">\
-                <h2>Tekst zmieniony</h2>\
+                <h2>Fragment AI {index}/{count}</h2>\
                 <p>{paragraph.output_text}</p>\
             </div>\
         </div><hr>'

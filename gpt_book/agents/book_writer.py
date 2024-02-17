@@ -6,6 +6,7 @@
     - process() loop uses current original paragraph and last generated paragraph as input for the next API call,
 """
 
+from copy import copy
 from dataclasses import dataclass
 
 import openai
@@ -59,13 +60,30 @@ class BookWriter:
                 },
                 {
                     "role": "user",
-                    "content": f"Oto fragment książki poprzedzający to co będziesz redagować : {last_generated} \n\n \
-                                            Oto oryginalny tekst zapisu audio:\n\n{paragraph}\n\n",
+                    "content": f"Oto oryginalny tekst zapisu audio, który wymaga redakcji : {paragraph}\n\n",
+                },
+                {
+                    "role": "user",
+                    "content": f"Dla kontekstu podaje Ci fragment książki, który już napisałeś i poprzedza on to co będziesz redagować. : {last_generated}.\n\n\
+                                Kontynuuj.",
                 },
             ]
 
             # Process : Generate
-            generated_paragraph = GptPrompt(client, messages, model=model)
+            generated_paragraph = None
+            for try_index in range(3):
+                # Prompt : Generate
+                generated_paragraph = GptPrompt(client, messages, model=model)
+
+                # Check : Generated valid paragraph
+                if generated_paragraph is not None:
+                    break
+
+                # Check : Last try
+                if try_index == 2:
+                    raise ValueError(
+                        "OpenAI GPT : Connection error! Failed to generate paragraph!"
+                    )
 
             # Add cost to billings
             billings.add_api_call(model)
@@ -76,6 +94,6 @@ class BookWriter:
             )
 
             # Last generated : Save
-            last_generated = generated_paragraph
+            last_generated = copy(generated_paragraph)
 
         return output_paragraphs
