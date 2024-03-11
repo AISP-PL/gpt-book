@@ -19,10 +19,11 @@
         "I": "Information",
         "W": "Warning"
     },
-    "cSpell.enabled": false,
+    "cSpell.enabled": true,
     "python.testing.pytestArgs": [
         "tests"
     ],
     "python.testing.unittestEnabled": false,
     "python.testing.pytestEnabled": true,
+    "cSpell.language": "en,pl",
 }

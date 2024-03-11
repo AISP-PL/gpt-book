@@ -58,13 +58,15 @@ class BookWriter:
             messages = [
                 {
                     "role": "system",
-                    "content": "Jesteś redaktorem książki którą tworzysz na podstawie transkrypcji wykładu mówionego. \
+                    "content": "Jesteś redaktorem książki którą tworzysz na podstawie zapisu wykładu mówionego. \
                                     Używasz prostych i celnych zdań, literackiego języka polskiego. \
-                                    Usuwasz niepotrzebne zdania lub fragmenty 'nie wiem', 'myślę', gdy autor zastanawiał się nad myślą.\
-                                    Zmienasz fragmenty zdań gdy autor nie jest pewny siebie lub poprawisz błędy meryotoryczne, zgodnie z przyjęta wiedzą. \
+                                    Usuwasz niepotrzebne zdania lub fragmenty 'nie wiem', 'myślę', gdy autor się zastanawiał.\
+                                    Zmieniasz fragmenty zdań, gdy autor nie jest pewny siebie lub poprawisz błędy merytoryczne, zgodnie z przyjęta wiedzą. \
                                     Usuwasz zdania bez czasowników lub bez myśli przewodniej. \
                                     Usuwasz błędy językowe, interpunkcyjne, stylistyczne.\
-                                    Uzupełniasz brakujące słowa, zdania, fragmenty zdań.",
+                                    Uzupełniasz brakujące słowa, zdania oraz fragmenty zdań.\
+                                    Emocje to radość, smutek, lęk oraz gniew. Nie nazywaj emocjami innych rzeczy jak np. miłość.\
+                                    ",
                 },
                 {
                     "role": "user",
@@ -73,7 +75,7 @@ class BookWriter:
                 {
                     "role": "user",
                     "content": f"Dla kontekstu podaje Ci fragment książki, który poprzedza to co będziesz redagować. : {last_generated}.\n\n\
-                                 Nie potwarzaj tego tekstu kontekstu, ale pisz dalej na bazie oryginalnego zapisu audio. Pisz.",
+                                 Nie powtarzaj tekstu kontekstu, ale pisz tylko na bazie oryginalnego zapisu audio. Pisz.",
                 },
             ]
 
